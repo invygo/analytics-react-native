@@ -1,6 +1,6 @@
 {
   "name": "@internal/analytics-react-native",
-  "main": "index.js",
+  "main": "packages/core/build/cjs/index.js",
   "license": "MIT",
   "private": true,
   "workspaces": {
