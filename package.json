@@ -19,6 +19,7 @@
     "build:core": "yarn core build",
     "build:integrations": "yarn integrations build",
     "build:test-app": "yarn test-app build",
+    "build:lib": "run-s build:{core,integrations}",
     "build": "run-s build:{core,integrations,test-app}",
     "test:core": "yarn core test",
     "test": "run-p test:*",
