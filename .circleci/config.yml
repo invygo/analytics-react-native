@@ -10,7 +10,7 @@ defaults:
   nodeJob: &nodeJob
     <<: *job
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:12.18
 
 version: 2
 jobs:
@@ -22,6 +22,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run:
           name: Snyk
+          context: snyk
           command: curl -sL https://raw.githubusercontent.com/segmentio/snyk_helpers/master/initialization/snyk.sh | sh
           environment:
             SNYK_FAIL_ON: upgradable
@@ -99,7 +100,7 @@ jobs:
   test-ios-vanilla:
     <<: *job
     macos:
-      xcode: '9.4.0'
+      xcode: '11.5.0'
     steps:
       - checkout
       # macOS VMs doesn't support Docker based caches
@@ -114,7 +115,7 @@ jobs:
   test-ios-cocoapods:
     <<: *job
     macos:
-      xcode: '9.4.0'
+      xcode: '11.5.0'
     steps:
       - checkout
       # macOS VMs doesn't support Docker based caches

@@ -4,10 +4,16 @@ export interface Configuration {
 	writeKey: string
 	recordScreenViews: boolean
 	trackAppLifecycleEvents: boolean
-	trackAttributionData: boolean
 	debug: boolean
 	flushAt: number
 	json: string
+	defaultProjectSettings: { [key: string]: any }
+	proxy?: {
+		scheme?: string
+		host?: string
+		port?: number
+		path?: string
+	}
 
 	android: {
 		flushInterval?: number
@@ -75,6 +81,7 @@ export interface Bridge {
 	disable(): Promise<void>
 	getAnonymousId(): Promise<string>
 	putDeviceToken(deviceToken: string): Promise<void>
+	setIDFA(idfa: string): Promise<void>
 }
 
 const bridge: Bridge = NativeModules.RNAnalytics

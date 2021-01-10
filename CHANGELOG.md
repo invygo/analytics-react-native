@@ -2,6 +2,79 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.2"></a>
+
+## [1.3.2](https://github.com/segmentio/analytics-react-native/compare/v1.3.1...v1.3.2) (2020-10-23)
+
+<a name="1.3.1"></a>
+
+## [1.3.1](https://github.com/segmentio/analytics-react-native/compare/v1.3.0...v1.3.1) (2020-09-09)
+
+### Bug Fixes
+
+- **android:** bump android dependency ([#214](https://github.com/segmentio/analytics-react-native/issues/214)) ([acd0f2f](https://github.com/segmentio/analytics-react-native/commit/acd0f2f))
+- **ios:** bump ios dependency ([#217](https://github.com/segmentio/analytics-react-native/issues/217)) ([4848bbd](https://github.com/segmentio/analytics-react-native/commit/4848bbd))
+
+<a name="1.3.0"></a>
+
+# [1.3.0](https://github.com/segmentio/analytics-react-native/compare/v1.2.1...v1.3.0) (2020-08-28)
+
+### Bug Fixes
+
+- **ci:** fixed ci issue ([c71a6cf](https://github.com/segmentio/analytics-react-native/commit/c71a6cf))
+- **docs:** updated readme to use 60 seconds vs 60 ms ([8cbf0b3](https://github.com/segmentio/analytics-react-native/commit/8cbf0b3))
+- **ios:** fixes for building for newer rn ([#206](https://github.com/segmentio/analytics-react-native/issues/206)) ([ecce14c](https://github.com/segmentio/analytics-react-native/commit/ecce14c))
+
+### Features
+
+- **core:** http proxying via setup configuration ([#202](https://github.com/segmentio/analytics-react-native/issues/202)) ([40a3f5a](https://github.com/segmentio/analytics-react-native/commit/40a3f5a))
+- **ios:** make idfa for ios external to analytics ([#210](https://github.com/segmentio/analytics-react-native/issues/210)) ([35f96a0](https://github.com/segmentio/analytics-react-native/commit/35f96a0))
+
+<a name="1.2.1"></a>
+
+## [1.2.1](https://github.com/segmentio/analytics-react-native/compare/v1.2.0-beta.3...v1.2.1) (2020-06-18)
+
+### Bug Fixes
+
+- **config:** pass user-supplied context for analytics calls ([#188](https://github.com/segmentio/analytics-react-native/issues/188)) ([7429567](https://github.com/segmentio/analytics-react-native/commit/7429567))
+
+<a name="1.2.0-beta.3"></a>
+
+# [1.2.0-beta.3](https://github.com/segmentio/analytics-react-native/compare/v1.2.0-beta.1...v1.2.0-beta.3) (2020-06-16)
+
+<a name="1.2.0-beta.2"></a>
+
+# [1.2.0-beta.2](https://github.com/segmentio/analytics-react-native/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2020-06-15)
+
+### Bug Fixes
+
+- **android:** parse android specific options correctly ([#187](https://github.com/segmentio/analytics-react-native/issues/187)) ([49e4815](https://github.com/segmentio/analytics-react-native/commit/49e4815))
+
+### Features
+
+- **android:** allow passing integration options ([#184](https://github.com/segmentio/analytics-react-native/issues/184)) ([6845c67](https://github.com/segmentio/analytics-react-native/commit/6845c67))
+
+<a name="1.1.1-beta.6"></a>
+
+## [1.1.1-beta.6](https://github.com/segmentio/analytics-react-native/compare/v1.1.1-beta.5...v1.1.1-beta.6) (2020-06-05)
+
+<a name="1.1.1-beta.5"></a>
+
+## [1.1.1-beta.5](https://github.com/segmentio/analytics-react-native/compare/v1.1.1-beta.4...v1.1.1-beta.5) (2020-05-15)
+
+<a name="1.1.1-beta.4"></a>
+
+## [1.1.1-beta.4](https://github.com/segmentio/analytics-react-native/compare/v1.1.1-beta.3...v1.1.1-beta.4) (2020-05-14)
+
+<a name="1.1.1-beta.3"></a>
+
+## [1.1.1-beta.3](https://github.com/segmentio/analytics-react-native/compare/v1.1.1-beta.2...v1.1.1-beta.3) (2020-04-30)
+
+### Bug Fixes
+
+- **bridge:** fix duplicated analytics client improving errors ([#162](https://github.com/segmentio/analytics-react-native/issues/162)) ([28a981d](https://github.com/segmentio/analytics-react-native/commit/28a981d))
+- **bridge:** fix p(r)omise typo ([#168](https://github.com/segmentio/analytics-react-native/issues/168)) ([d9794db](https://github.com/segmentio/analytics-react-native/commit/d9794db))
+
 <a name="1.1.1-beta.2"></a>
 
 ## [1.1.1-beta.2](https://github.com/segmentio/analytics-react-native/compare/v1.1.1-beta.1...v1.1.1-beta.2) (2020-04-08)

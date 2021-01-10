@@ -26,15 +26,14 @@ package com.segment.analytics.reactnative.core
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import com.facebook.react.bridge.*
-import com.segment.analytics.Analytics
-import com.segment.analytics.Properties
-import com.segment.analytics.Options
-import com.segment.analytics.Traits
-import com.segment.analytics.ValueMap
 import com.segment.analytics.internal.Utils.getSegmentSharedPreferences
 import java.util.concurrent.TimeUnit
 import com.facebook.react.bridge.ReadableMap
+import com.segment.analytics.*
+import java.io.IOException
+import java.net.HttpURLConnection
 
 
 
@@ -129,16 +128,17 @@ class RNAnalyticsModule(context: ReactApplicationContext): ReactContextBaseJavaM
             builder.recordScreenViews()
         }
 
-
-        if(options.getBoolean("trackAttributionData")) {
-            builder.trackAttributionInformation()
-        }
-
-        if(options.hasKey("flushInterval")) {
-            builder.flushInterval(
-                    options.getInt("flushInterval").toLong(),
-                    TimeUnit.MILLISECONDS
-            )
+        if(options.hasKey("android") && options.getType("android") == ReadableType.Map) {
+            val androidOptions = options.getMap("android")!!
+            if(androidOptions.hasKey("flushInterval")) {
+                builder.flushInterval(
+                        androidOptions.getInt("flushInterval").toLong(),
+                        TimeUnit.MILLISECONDS
+                )
+            }
+            if(androidOptions.hasKey("collectDeviceId")) {
+                builder.collectDeviceId(androidOptions.getBoolean("collectDeviceId"))
+            }
         }
 
         if(options.getBoolean("debug")) {
@@ -147,6 +147,37 @@ class RNAnalyticsModule(context: ReactApplicationContext): ReactContextBaseJavaM
 
         if(options.getBoolean("trackAppLifecycleEvents")) {
             builder.trackApplicationLifecycleEvents()
+        }
+
+        if(options.hasKey("proxy") && options.getType("proxy") == ReadableType.Map) {
+            val proxyOptions = options.getMap("proxy")!!
+
+            builder.connectionFactory(object:ConnectionFactory() {
+                override fun openConnection(url:String): HttpURLConnection {
+                    val uri = Uri.parse(url)
+                    val uriBuilder = uri.buildUpon();
+
+                    if (proxyOptions.hasKey("scheme")) {
+                        uriBuilder.scheme(proxyOptions.getString("scheme"))
+                    }
+
+                    if (proxyOptions.hasKey("host")) {
+                        var host = proxyOptions.getString("host");
+
+                        if (proxyOptions.hasKey("port")) {
+                            host = host + ":" + proxyOptions.getInt("port");
+                        }
+
+                        uriBuilder.encodedAuthority(host)
+                    }
+
+                    if (proxyOptions.hasKey("path")) {
+                        uriBuilder.path(proxyOptions.getString("path") + uri.path)
+                    }
+
+                    return super.openConnection(uriBuilder.toString())
+                }
+            })
         }
 
         try {
@@ -165,6 +196,12 @@ class RNAnalyticsModule(context: ReactApplicationContext): ReactContextBaseJavaM
         if(options.getBoolean("trackAppLifecycleEvents")) {
             this.trackApplicationLifecycleEvents(writeKey)
         }
+
+        if(options.hasKey("defaultProjectSettings")) {
+            builder.defaultProjectSettings(Utils.toValueMap(options.getMap("defaultProjectSettings")))
+        }
+
+        RNAnalytics.setupCallbacks(analytics)
 
         singletonJsonConfig = json
         promise.resolve(null)
@@ -243,7 +280,11 @@ private fun optionsFrom(context: ReadableMap?, integrations: ReadableMap?): Opti
     }
 
     integrations?.toHashMap()?.forEach { (key, value) ->
-        options.setIntegration(key, value.toString().toBoolean())
+        if (value is HashMap<*, *>) {
+            options.setIntegrationOptions(key, value.toMap() as Map<String, Any>)
+        } else {
+            options.setIntegration(key, value.toString().toBoolean())
+        }
     }
 
     return options

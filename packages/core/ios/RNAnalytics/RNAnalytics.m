@@ -12,6 +12,8 @@
 
 static NSMutableSet* RNAnalyticsIntegrations = nil;
 static NSLock* RNAnalyticsIntegrationsLock = nil;
+static NSString* RNAnalyticsAdvertisingId = nil;
+static BOOL RNAnalyaticsUseAdvertisingId = NO;
 
 @implementation RNAnalytics
 
@@ -23,7 +25,7 @@ static NSLock* RNAnalyticsIntegrationsLock = nil;
 
 +(void)initialize {
     [super initialize];
-    
+
     RNAnalyticsIntegrations = [NSMutableSet new];
     RNAnalyticsIntegrationsLock = [NSLock new];
 }
@@ -55,17 +57,49 @@ RCT_EXPORT_METHOD(
     }
 
     SEGAnalyticsConfiguration* config = [SEGAnalyticsConfiguration configurationWithWriteKey:options[@"writeKey"]];
-    
+
     config.recordScreenViews = [options[@"recordScreenViews"] boolValue];
     config.trackApplicationLifecycleEvents = [options[@"trackAppLifecycleEvents"] boolValue];
-    config.trackAttributionData = [options[@"trackAttributionData"] boolValue];
     config.flushAt = [options[@"flushAt"] integerValue];
-    config.enableAdvertisingTracking = [options[@"ios"][@"trackAdvertising"] boolValue];
-    
+    config.enableAdvertisingTracking = RNAnalyaticsUseAdvertisingId = [options[@"ios"][@"trackAdvertising"] boolValue];
+    config.defaultSettings = options[@"defaultProjectSettings"];
+
+    // set this block regardless.  the data will come in after the fact most likely.
+    config.adSupportBlock = ^NSString * _Nonnull{
+        return RNAnalyticsAdvertisingId;
+    };
+
+    if ([options valueForKey:@"proxy"]) {
+        NSDictionary *proxyOptions = (NSDictionary *)[options valueForKey:@"proxy"];
+
+        config.requestFactory = ^(NSURL *url) {
+            NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+
+            if ([proxyOptions valueForKey:@"scheme"]) {
+                components.scheme = proxyOptions[@"scheme"];
+            }
+
+            if ([proxyOptions valueForKey:@"host"]) {
+                components.host = proxyOptions[@"host"];
+            }
+
+            if ([proxyOptions valueForKey:@"port"]) {
+                components.port = [NSNumber numberWithInt:[proxyOptions[@"port"] intValue]];
+            }
+
+            if ([proxyOptions valueForKey:@"path"]) {
+                components.path = [proxyOptions[@"path"] stringByAppendingString:components.path];
+            }
+
+            NSURL *transformedURL = components.URL;
+            return [NSMutableURLRequest requestWithURL:transformedURL];
+        };
+    }
+
     for(id factory in RNAnalyticsIntegrations) {
         [config use:factory];
     }
-    
+
     [SEGAnalytics debug:[options[@"debug"] boolValue]];
 
     @try {
@@ -74,14 +108,14 @@ RCT_EXPORT_METHOD(
     @catch(NSError* error) {
         return rejecter(@"E_SEGMENT_ERROR", @"Unexpected native Analtyics error", error);
     }
-    
+
     // On iOS we use method swizzling to intercept lifecycle events
     // However, React-Native calls our library after applicationDidFinishLaunchingWithOptions: is called
     // We fix this by manually calling this method at setup-time
     // TODO(fathyb): We should probably implement a dedicated API on the native part
     if(config.trackApplicationLifecycleEvents) {
         SEL selector = @selector(_applicationDidFinishLaunchingWithOptions:);
-        
+
         if ([SEGAnalytics.sharedAnalytics respondsToSelector:selector]) {
             [SEGAnalytics.sharedAnalytics performSelector:selector
                                                withObject:_bridge.launchOptions];
@@ -94,6 +128,10 @@ RCT_EXPORT_METHOD(
 
 - (NSDictionary*)withContextAndIntegrations :(NSDictionary*)context :(NSDictionary*)integrations {
     return @{ @"context": context, @"integrations": integrations ?: @{}};
+}
+
+RCT_EXPORT_METHOD(setIDFA:(NSString *)idfa) {
+    RNAnalyticsAdvertisingId = idfa;
 }
 
 
