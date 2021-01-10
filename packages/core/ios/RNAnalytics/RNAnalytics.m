@@ -190,7 +190,7 @@ RCT_EXPORT_METHOD(
 
 RCT_EXPORT_METHOD(putDeviceToken:(NSString*)deviceToken)
 {
-    [SEGAnalytics.sharedAnalytics registeredForRemoteNotificationsWithDeviceToken:deviceToken];
+    [SEGAnalytics.sharedAnalytics registeredForRemoteNotificationsWithDeviceToken:[deviceToken dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 @end
