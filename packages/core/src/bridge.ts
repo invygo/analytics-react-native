@@ -43,10 +43,10 @@ export interface Context extends JsonMap {
 	}
 }
 
-export interface Options {
+export type Options = {
 	integrations?: Integrations
 	context?: Context
-}
+} & JsonMap
 
 export interface Bridge {
 	setup(configuration: Configuration): Promise<void>
@@ -57,9 +57,10 @@ export interface Bridge {
 		context: JsonMap
 	): Promise<void>
 	identify(
-		user: string,
-		traits: JsonMap,
+		user: string | null,
+		traits: JsonMap | null,
 		options: Options,
+		integrations: Integrations,
 		context: JsonMap
 	): Promise<void>
 	screen(

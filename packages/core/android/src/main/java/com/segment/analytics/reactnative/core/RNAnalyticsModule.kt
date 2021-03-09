@@ -112,7 +112,7 @@ class RNAnalyticsModule(context: ReactApplicationContext): ReactContextBaseJavaM
             }
             else {
                 if (BuildConfig.DEBUG) {
-                    return promise.resolve(this)
+                    return promise.resolve(null)
                 }
                 else {
                     return promise.reject("E_SEGMENT_RECONFIGURED", "Segment Analytics Client was allocated multiple times, please check your environment.")
@@ -138,6 +138,9 @@ class RNAnalyticsModule(context: ReactApplicationContext): ReactContextBaseJavaM
             }
             if(androidOptions.hasKey("collectDeviceId")) {
                 builder.collectDeviceId(androidOptions.getBoolean("collectDeviceId"))
+            }
+            if(androidOptions.hasKey("experimentalUseNewLifecycleMethods")) {
+                builder.experimentalUseNewLifecycleMethods(androidOptions.getBoolean("experimentalUseNewLifecycleMethods"))
             }
         }
 
@@ -225,12 +228,24 @@ class RNAnalyticsModule(context: ReactApplicationContext): ReactContextBaseJavaM
             )
 
     @ReactMethod
-    fun identify(userId: String?, traits: ReadableMap?, integrations: ReadableMap?, context: ReadableMap?) =
-            analytics.identify(
-                    userId,
-                    Traits() from traits,
-                    optionsFrom(context, integrations)
-            )
+    fun identify(userId: String?, traits: ReadableMap?, options: ReadableMap?, integrations: ReadableMap?, context: ReadableMap?) {
+
+        val mergedTraits = if (options?.hasKey("anonymousId") == true) {
+            val map = WritableNativeMap()
+            map.merge(traits ?: WritableNativeMap())
+            map.putString("anonymousId", options.getString("anonymousId"))
+            map
+        } else {
+            traits
+        }
+
+        analytics.identify(
+                userId,
+                Traits() from mergedTraits,
+                optionsFrom(context, integrations)
+        )
+    }
+
 
     @ReactMethod
     fun group(groupId: String, traits: ReadableMap?, integrations: ReadableMap, context: ReadableMap) =

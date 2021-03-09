@@ -7,7 +7,12 @@
 
 #import "RNAnalytics.h"
 
+#if defined(__has_include) && __has_include(<Analytics/SEGAnalytics.h>)
 #import <Analytics/SEGAnalytics.h>
+#else
+#import <Segment/SEGAnalytics.h>
+#endif
+
 #import <React/RCTBridge.h>
 
 static NSMutableSet* RNAnalyticsIntegrations = nil;
@@ -147,10 +152,16 @@ RCT_EXPORT_METHOD(screen:(NSString*)name :(NSDictionary*)properties :(NSDictiona
                                  options:[self withContextAndIntegrations :context :integrations]];
 }
 
-RCT_EXPORT_METHOD(identify:(NSString*)userId :(NSDictionary*)traits :(NSDictionary*)integrations :(NSDictionary*)context) {
-    [SEGAnalytics.sharedAnalytics identify:userId
-                                    traits:traits
-                                   options:[self withContextAndIntegrations :context :integrations]];
+RCT_EXPORT_METHOD(identify:(NSString*)userId
+                          :(NSDictionary * _Nullable)traits
+                          :(NSDictionary *)options
+                          :(NSDictionary *)integrations
+                          :(NSDictionary *)context) {
+    NSMutableDictionary *mergedOptions = [[self withContextAndIntegrations :context :integrations] mutableCopy];
+    [mergedOptions addEntriesFromDictionary: options ?: @{}];
+    [SEGAnalytics.sharedAnalytics identify: userId
+                                    traits: traits
+                                   options: mergedOptions];
 }
 
 RCT_EXPORT_METHOD(group:(NSString*)groupId :(NSDictionary*)traits :(NSDictionary*)integrations :(NSDictionary*)context) {

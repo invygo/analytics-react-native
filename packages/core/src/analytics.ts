@@ -133,8 +133,14 @@ export module Analytics {
 			 * Enabled by default.
 			 */
 			collectDeviceId?: boolean
-		}
-	}
+
+      /**
+       * Whether the analytics client should use the new lifecycle methods. This option is enabled by default.
+       * If the new lifecycle methods cause issue, you should disable this config option
+       */
+      experimentalUseNewLifecycleMethods?: boolean
+    }
+  }
 
 	export class Client {
 		/**
@@ -295,8 +301,8 @@ export module Analytics {
 		 * @param traits A dictionary of traits you know about the user. Things like: email, name, plan, etc.
 		 * @param options A dictionary of options, e.g. integrations (thigh analytics integration to forward the event to)
 		 */
-		public async identify(user: string, traits: JsonMap = {}, options: Options = {}) {
-			await this.middlewares.run('identify', { user, traits, integrations: options.integrations || {} }, options.context || {})
+		public async identify(user: string | null, traits: JsonMap = {}, options: Options = {}) {
+			await this.middlewares.run('identify', { user, traits, options, integrations: options.integrations || {} }, options.context || {})
 		}
 
 		/**
