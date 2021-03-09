@@ -39,14 +39,14 @@ export interface Context extends JsonMap {
         version: string;
     };
 }
-export interface Options {
+export declare type Options = {
     integrations?: Integrations;
     context?: Context;
-}
+} & JsonMap;
 export interface Bridge {
     setup(configuration: Configuration): Promise<void>;
     track(event: string, properties: JsonMap, options: Options, context: JsonMap): Promise<void>;
-    identify(user: string, traits: JsonMap, options: Options, context: JsonMap): Promise<void>;
+    identify(user: string | null, traits: JsonMap | null, options: Options, integrations: Integrations, context: JsonMap): Promise<void>;
     screen(name: string, properties: JsonMap, options: Options, context: JsonMap): Promise<void>;
     group(groupId: string, traits: JsonMap, options: Options, context: JsonMap): Promise<void>;
     alias(alias: string, options: Options, context: JsonMap): Promise<void>;

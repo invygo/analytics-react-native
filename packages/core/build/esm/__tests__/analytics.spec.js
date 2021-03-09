@@ -121,7 +121,7 @@ it('does .screen()', function () {
     return testCall('screen')('Shopping cart', { from: 'Product page' }, {}, ctx);
 });
 it('does .identify()', function () {
-    return testCall('identify')('sloth', { eats: 'leaves' }, {}, ctx);
+    return testCall('identify')('sloth', { eats: 'leaves' }, {}, {}, ctx);
 });
 it('does .group()', function () { return testCall('group')('bots', { humans: false }, {}, ctx); });
 it('does .alias()', function () { return testCall('alias')('new alias', {}, ctx); });

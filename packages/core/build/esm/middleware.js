@@ -77,7 +77,7 @@ var MiddlewareChain = /** @class */ (function () {
                                     })];
                             case 'identify':
                                 return [2 /*return*/, this.wrapper.run('identify', function (identify) {
-                                        return identify(payload.data.user, payload.data.traits, payload.data.integrations, payload.context);
+                                        return identify(payload.data.user, payload.data.traits, payload.data.options, payload.data.integrations, payload.context);
                                     })];
                             case 'screen':
                                 return [2 /*return*/, this.wrapper.run('screen', function (screen) {

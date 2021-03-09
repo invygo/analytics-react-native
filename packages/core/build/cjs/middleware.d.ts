@@ -20,8 +20,9 @@ export interface ScreenPayload extends MiddlewarePayload<'screen', {
 }> {
 }
 export interface IdentifyPayload extends MiddlewarePayload<'identify', {
-    user: string;
-    traits: JsonMap;
+    user: string | null;
+    traits: JsonMap | null;
+    options: JsonMap;
     integrations: Integrations;
 }> {
 }

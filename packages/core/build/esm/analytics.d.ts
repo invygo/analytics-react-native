@@ -122,6 +122,11 @@ export declare module Analytics {
              * Enabled by default.
              */
             collectDeviceId?: boolean;
+            /**
+             * Whether the analytics client should use the new lifecycle methods. This option is enabled by default.
+             * If the new lifecycle methods cause issue, you should disable this config option
+             */
+            experimentalUseNewLifecycleMethods?: boolean;
         };
     }
     class Client {
@@ -245,7 +250,7 @@ export declare module Analytics {
          * @param traits A dictionary of traits you know about the user. Things like: email, name, plan, etc.
          * @param options A dictionary of options, e.g. integrations (thigh analytics integration to forward the event to)
          */
-        identify(user: string, traits?: JsonMap, options?: Options): Promise<void>;
+        identify(user: string | null, traits?: JsonMap, options?: Options): Promise<void>;
         /**
          * Associate a user with a group, organization, company, project, or w/e *you* call them.
          *
